@@ -9,6 +9,7 @@ import {
 } from "discord.js";
 import "dotenv/config";
 import fs from "fs";
+import express from "express";
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds],
@@ -170,3 +171,13 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
 // Login to Discord with token
 client.login(process.env.TOKEN);
+const app = express();
+const port = 3000;
+
+app.get("/", (req, res) => {
+  res.send("Hello, world!");
+});
+
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});
