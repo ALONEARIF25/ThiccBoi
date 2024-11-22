@@ -9,6 +9,7 @@ import {
 } from "discord.js";
 import "dotenv/config";
 import fs from "fs";
+import express from "express";
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds],
@@ -107,12 +108,6 @@ client.on(Events.InteractionCreate, async (interaction) => {
   }
 });
 // Add help command to commands array
-commands.push(
-  new SlashCommandBuilder()
-    .setName("help")
-    .setDescription("Shows all available commands")
-    .toJSON()
-);
 
 // Add help command handler
 client.on(Events.InteractionCreate, async (interaction) => {
@@ -139,7 +134,7 @@ client.once(Events.ClientReady, (c) => {
 
   // Set the bot's presence
   c.user.setPresence({
-    status: "idle", // Options: "online", "idle", "dnd", "invisible"
+    status: "online", // Options: "online", "idle", "dnd", "invisible"
     activities: [
       {
         name: "Thicc Bois", // Status message
@@ -166,4 +161,69 @@ client.on(Events.InteractionCreate, async (interaction) => {
       await interaction.editReply("No results found.");
     }
   }
+});
+
+// Log the number of servers the bot is in
+client.once(Events.ClientReady, () => {
+  console.log(`Bot is in ${client.guilds.cache.size} servers`);
+});
+
+// Login to Discord with token
+client.login(process.env.TOKEN);
+const app = express();
+const port = 3000;
+
+import path from "path";
+const __dirname = path.resolve();
+
+app.get("/servercount", (_req, res) => {
+  res.json({
+    servers: client.guilds.cache.size,
+  });
+});
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "/public/index.html"));
+});
+
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});
+
+app.get("/botstatus", (_req, res) => {
+  if (client.user) {
+    const presence = client.user.presence;
+    const activity = presence.activities[0];
+
+    res.json({
+      status: presence.status || "offline",
+      activity: activity
+        ? `${
+            activity.type === ActivityType.Watching ? "Watching" : activity.type
+          } ${activity.name}`
+        : "None",
+    });
+  } else {
+    res.status(500).json({ error: "Bot is not logged in." });
+  }
+});
+
+app.get("/botprofile", (_req, res) => {
+  if (client.user) {
+    res.json({
+      username: client.user.username,
+      pfpurl: client.user.displayAvatarURL({ format: "png", size: 128 }),
+      verified: client.user.verified,
+    });
+  } else {
+    res.status(500).json({ error: "Bot is not logged in." });
+  }
+});
+
+app.get("/allcmds", (req, res) => {
+  const commandsList = commands.map((cmd) => ({
+    name: cmd.name,
+    description: cmd.description,
+  }));
+  res.json({ commands: commandsList });
 });
