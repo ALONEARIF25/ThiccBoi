@@ -171,9 +171,11 @@ client.once(Events.ClientReady, () => {
 // Login to Discord with token
 client.login(process.env.TOKEN);
 const app = express();
+app.use(cors());
 const port = 3000;
 
 import path from "path";
+import cors from "cors";
 const __dirname = path.resolve();
 
 app.get("/servercount", (_req, res) => {
