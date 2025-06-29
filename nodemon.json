@@ -1,0 +1,17 @@
+{
+  "watch": [
+    "cmds/**/*",
+    "events/**/*",
+    "utils/**/*",
+    "api/**/*",
+    "index.js",
+    "thicc.json"
+  ],
+  "ext": "js,json",
+  "ignore": ["node_modules/**/*", "public/**/*", "*.log"],
+  "delay": 1000,
+  "verbose": true,
+  "env": {
+    "NODE_ENV": "development"
+  }
+}

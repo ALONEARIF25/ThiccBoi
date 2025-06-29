@@ -1,10 +1,18 @@
 {
   "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js --watch cmds --watch events --watch utils --watch api --watch . --ignore node_modules --ignore public",
+    "dev:commands": "nodemon index.js --watch cmds"
+  },
   "dependencies": {
     "cors": "^2.8.5",
-    "discord.js": "^14.16.3",
+    "discord.js": "^14.21.0",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "fs": "^0.0.1-security"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
   }
 }
